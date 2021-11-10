@@ -1,8 +1,11 @@
+from enum import unique
 from flask import *
 from flask_sqlalchemy import SQLAlchemy
 import datetime
-from datetime import date
+from datetime import datetime
 import re
+from sqlalchemy import create_engine, Column, Integer, String, Sequence
+from sqlalchemy.ext.declarative import declarative_base
 app = Flask(__name__)
 
 app.config["SQLAlCHEMY_TRACK_NOTIFICATION"]=True
@@ -11,9 +14,9 @@ app.config["SQLAlCHEMY_TRACK_MODIFICATIONS"]=True
 POSTGRES = {
      'user': 'postgres',
      'pw': 'karan123',
-     'db': 'sms',
+     'db': 'forestfiresimulation',
      'host': 'localhost',
-     'port': '5434',
+     'port': '5432',
 }
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:\
 %(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
@@ -22,16 +25,18 @@ db= SQLAlchemy(app)
 
 
 class sms(db.Model):
-    __tablename__='SMS'
-    latitude = db.Column(db.Float(),primary_key=True)
+    __tablename__='data_entry'
+    id = Column(Integer, Sequence('data_entry_id_seq'), primary_key=True)
+    latitude = db.Column(db.Float(),nullable=False)
     longitude = db.Column(db.Float(),nullable=False)
-    date = db.Column(db.String(),nullable=False)
-    time = db.Column(db.String(),nullable=False)
-    def __init__(self,latitude,longitude,date,time):
+    date_of_fire = db.Column(db.DateTime(),nullable=False)
+    fire_start_time = db.Column(db.Time(),nullable=False)
+    def __init__(self,latitude,longitude,date_of_fire,fire_start_time):
+        self.id
         self.latitude=latitude
         self.longitude=longitude
-        self.date=date
-        self.time=time
+        self.date_of_fire=date_of_fire
+        self.fire_start_time=fire_start_time
 
 
 
@@ -52,10 +57,13 @@ def psms():
     matchdate= re.search(r'\d{2}-\d{2}-\d{2}', stringtemp)
     matchtime= re.search(r'\d{2}:\d{2}:\d{2}', stringtemp)
     finaldate=matchdate.group()
+    finaldate=datetime.strptime(finaldate,'%d-%m-%y').strftime("%Y-%m-%d %H:%M:%S")
     finaltime=matchtime.group()
+    finaltime = datetime.strptime(finaltime,'%H:%M:%S').time()
+
     print(finaldate,finaltime)
 
-    msg= sms(latitude=latitude,longitude=longitude,date=finaldate,time=finaltime)
+    msg= sms(latitude=latitude,longitude=longitude,date_of_fire=finaldate,fire_start_time=finaltime)
     db.session.add(msg)
     db.session.commit()
 
