@@ -13,7 +13,7 @@ app.config["SQLAlCHEMY_TRACK_MODIFICATIONS"]=True
 
 POSTGRES = {
      'user': 'postgres',
-     'pw': 'karan123',
+     'pw': 'prem0409',
      'db': 'forestfiresimulation',
      'host': 'localhost',
      'port': '5432',
@@ -26,7 +26,7 @@ db= SQLAlchemy(app)
 
 class sms(db.Model):
     __tablename__='data_entry'
-    id = Column(Integer, Sequence('data_entry_id_seq'), primary_key=True)
+    id = Column(Integer, Sequence('data_sequence'), primary_key=True)
     latitude = db.Column(db.Float(),nullable=False)
     longitude = db.Column(db.Float(),nullable=False)
     date_of_fire = db.Column(db.DateTime(),nullable=False)
@@ -51,8 +51,8 @@ def psms():
     print(last)
     latitude=last[0]
     longitude=last[1].lstrip()    
-    latitude = sum(float(x) / 60 ** n for n, x in enumerate(latitude[:-1].split(' ')))  * (1 if 'N' in latitude[-1] else -1)
-    longitude = sum(float(x) / 60 ** n for n, x in enumerate(longitude[:-1].split(' ')))  * (1 if 'E' in longitude[-1] else -1)
+    # latitude = sum(float(x) / 60 ** n for n, x in enumerate(latitude[:-1].split(' ')))  * (1 if 'N' in latitude[-1] else -1)
+    # longitude = sum(float(x) / 60 ** n for n, x in enumerate(longitude[:-1].split(' ')))  * (1 if 'E' in longitude[-1] else -1)
     print(latitude,longitude)
     matchdate= re.search(r'\d{2}-\d{2}-\d{2}', stringtemp)
     matchtime= re.search(r'\d{2}:\d{2}:\d{2}', stringtemp)
