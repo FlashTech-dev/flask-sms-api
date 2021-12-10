@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\Admin\Desktop\Flask\env"
+VIRTUAL_ENV="C:\Users\Admin\Desktop\flask-sms-api\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
